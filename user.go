@@ -18,20 +18,20 @@ type User struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
-func create(w http.ResponseWriter, r *http.Request) {
+func userCreate(w http.ResponseWriter, r *http.Request) {
 	var user User
 	json.NewDecoder(r.Body).Decode(&user)
 	db.Create(&user)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(user)
 }
-func find(w http.ResponseWriter, r *http.Request) {
+func userFind(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var users []User
 	db.Find(&users)
 	json.NewEncoder(w).Encode(users)
 }
-func findById(w http.ResponseWriter, r *http.Request) {
+func userFindById(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 	userId := params["userId"]
@@ -40,7 +40,7 @@ func findById(w http.ResponseWriter, r *http.Request) {
 	db.First(&user, userId)
 	json.NewEncoder(w).Encode(user)
 }
-func updateById(w http.ResponseWriter, r *http.Request) {
+func userUpdateById(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 	userId := params["userId"]
@@ -55,7 +55,7 @@ func updateById(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(user)
 }
-func deleteById(w http.ResponseWriter, r *http.Request) {
+func userDeleteById(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	userId := params["userId"]
 	id64, _ := strconv.ParseUint(userId, 10, 64)
@@ -65,10 +65,10 @@ func deleteById(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-func initRoutes() {
-	router.HandleFunc("/users", create).Methods("POST")
-	router.HandleFunc("/users/{userId}", findById).Methods("GET")
-	router.HandleFunc("/users", find).Methods("GET")
-	router.HandleFunc("/users/{userId}", updateById).Methods("PUT")
-	router.HandleFunc("/users/{userId}", deleteById).Methods("DELETE")
+func initUserRoutes() {
+	router.HandleFunc("/users", userCreate).Methods("POST")
+	router.HandleFunc("/users/{userId}", userFindById).Methods("GET")
+	router.HandleFunc("/users", userFind).Methods("GET")
+	router.HandleFunc("/users/{userId}", userUpdateById).Methods("PUT")
+	router.HandleFunc("/users/{userId}", userDeleteById).Methods("DELETE")
 }

@@ -23,12 +23,13 @@ func initDB() {
 		panic("failed to connect database")
 	}
 
-	db.AutoMigrate(&User{})
+	db.AutoMigrate(&User{}, &Account{})
 }
 
 func main() {
 	router = mux.NewRouter()
-	initRoutes()
+	initUserRoutes()
+	initAccountRoutes()
 	// Initialize db connection
 	initDB()
 
